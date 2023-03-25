@@ -12,7 +12,7 @@ jobs:
         include:
           - os: ubuntu-latest
             suffix: linux
-          - os: macos-11
+          - os: macos-latest
             suffix: macos
           - os: windows-latest
             suffix: win
@@ -33,7 +33,6 @@ jobs:
           BIN_SUFFIX: ${{ matrix.suffix }}
         run: |
            ./mvnw clean -Pnative native:compile
-           ./props-demo.sh
            rm -f ./target/props.jar 
            rm -f ./target/props.jar.original
            rm -f ./target/props***build_artifacts.txt
