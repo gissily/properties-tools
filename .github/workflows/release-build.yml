@@ -33,9 +33,18 @@ jobs:
           BIN_SUFFIX: ${{ matrix.suffix }}
         run: |
            ./mvnw clean -Pnative native:compile
-           rm -f ./target/props.jar 
-           rm -f ./target/props.jar.original
-           rm -f ./target/props***build_artifacts.txt
+      - name: clean win
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: |
+          del /f ./target/props.jar
+          del /f ./target/props.jar.original
+          del /f ./target/props***build_artifacts.txt
+      - name: clean
+        if: ${{ matrix.os != 'windows-latest' }}
+        run: | 
+          rm -f ./target/props.jar 
+          rm -f ./target/props.jar.original
+          rm -f ./target/props***build_artifacts.txt
       - name: Release and Upload
         uses: softprops/action-gh-release@v1
         with:
