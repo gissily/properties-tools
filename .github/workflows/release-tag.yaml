@@ -3,7 +3,7 @@ name: Release Tag
 on: [workflow_dispatch]
 
 jobs:
-  build-release:
+  release-tag:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
