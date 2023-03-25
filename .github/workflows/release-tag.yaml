@@ -21,6 +21,7 @@ jobs:
       - name: Perpare
         run: |
           sudo apt update && sudo apt install -y bc
+      - uses: fregante/setup-git-user@v2
       - name: Tag
         run: |
            ./ci/script/commit-next-version.sh
