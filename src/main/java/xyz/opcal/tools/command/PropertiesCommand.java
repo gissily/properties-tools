@@ -85,7 +85,7 @@ public class PropertiesCommand implements Runnable {
 		properties.setProperty(key, value);
 
 		try (var outStream = new FileOutputStream(file)) {
-			properties.store(outStream, "update");
+			properties.store(outStream, null);
 		} catch (Exception e) {
 			throw new ParameterException(spec.commandLine(), "Properties save exception", e);
 		}
