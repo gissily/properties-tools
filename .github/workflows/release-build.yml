@@ -2,7 +2,7 @@ name: Package Build and Release
 on:
   push:
     tags:
-      - '[1-9]+.[0-9]+.[0-9]+.release'
+      - '*'
 
 jobs:
   build-release:
