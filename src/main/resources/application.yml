@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: properties-tools
+  main:
+    banner-mode: off
+    
+    
+logging:
+  level:
+    ROOT: ERROR
