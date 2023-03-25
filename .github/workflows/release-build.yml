@@ -1,13 +1,11 @@
-name: Push Package Sources and Build
+name: Package Build and Release
 on:
   push:
-    branches:
-      - main
-    tags-ignore:
+    tags:
       - '*'
-      
+
 jobs:
-  push-and-build:
+  build-release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -20,8 +18,13 @@ jobs:
           components: 'native-image'
           cache: 'maven'
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Testing
+      - name: Package
         run: |
-           ./mvnw clean -Pnative test
-      
-    
+           ./mvnw clean -Pnative native:compile
+           ./props-demo.sh
+      - name: Release and Upload
+        uses: softprops/action-gh-release@v1
+        with:
+          files: './target/props'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

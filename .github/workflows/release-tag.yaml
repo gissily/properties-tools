@@ -1,17 +1,15 @@
-name: Push Package Sources and Build
-on:
-  push:
-    branches:
-      - main
-    tags-ignore:
-      - '*'
-      
+name: Release Tag
+
+on: [workflow_dispatch]
+
 jobs:
-  push-and-build:
+  build-release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          ref: 'main'
       - name: Setup graalvm
         uses: graalvm/setup-graalvm@v1
         with:
@@ -20,8 +18,7 @@ jobs:
           components: 'native-image'
           cache: 'maven'
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Testing
+      - name: Tag
         run: |
-           ./mvnw clean -Pnative test
-      
-    
+           ./mvnw clean -Pnative native:compile
+           ./props-demo.sh
