@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 set -e
 
 SCRIPT=`readlink -f "${BASH_SOURCE:-$0}"`
