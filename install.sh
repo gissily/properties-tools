@@ -1,16 +1,18 @@
 #!/bin/bash
 
 OSTYPE=$(uname)
-BIN_SUFFIX
-if [[ "$OSTYPE" == "Darwin" ]]; then
-  BIN_SUFFIX=macos
+BIN_SUFFIX=""
+
+if [[ "${OSTYPE}" == "Darwin" ]]; then
+  BIN_SUFFIX="macos"
 else 
-  BIN_SUFFIX=linux
+  BIN_SUFFIX="linux"
 fi
 
 RELEASE=$(curl -s https://api.github.com/repos/gissily/properties-tools/releases/latest  | grep tag_name | cut -d '"' -f 4)
 
-DOWNLOAD_URL=https://github.com/gissily/properties-tools/releases/download/${RELEASE}/props-$(BIN_SUFFIX) 
+DOWNLOAD_URL="https://github.com/gissily/properties-tools/releases/download/${RELEASE}/props-${BIN_SUFFIX}"
+ 
 echo "downloading ${DOWNLOAD_URL}"
 
 curl -L ${DOWNLOAD_URL} -o /tmp/props 
