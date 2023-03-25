@@ -35,10 +35,11 @@ jobs:
            ./mvnw clean -Pnative native:compile
       - name: clean win
         if: ${{ matrix.os == 'windows-latest' }}
+        shell: cmd
         run: |
-          del /f ./target/props.jar
-          del /f ./target/props.jar.original
-          del /f ./target/props***build_artifacts.txt
+          del /f .\target\props.jar
+          del /f .\target\props.jar.original
+          del /f .\target\props***build_artifacts.txt
       - name: clean
         if: ${{ matrix.os != 'windows-latest' }}
         run: | 
