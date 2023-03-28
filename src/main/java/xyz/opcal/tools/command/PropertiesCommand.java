@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Properties;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import picocli.CommandLine.Command;
@@ -16,11 +15,8 @@ import picocli.CommandLine.Parameters;
 import picocli.CommandLine.Spec;
 
 @Component
-@Command(mixinStandardHelpOptions = true, description = "properties file update command")
+@Command(mixinStandardHelpOptions = true, description = "properties file update command", versionProvider = PropsVersionProvider.class)
 public class PropertiesCommand implements Runnable {
-
-	@Value("${info.app.version}")
-	private String version;
 
 	@Spec
 	CommandSpec spec;
@@ -94,11 +90,6 @@ public class PropertiesCommand implements Runnable {
 			throw new ParameterException(spec.commandLine(), "Properties save exception", e);
 		}
 		System.out.println(key + "=" + properties.getProperty(key));
-	}
-
-	@Command(name = "version", description = "version")
-	public void version() {
-		System.out.println(version);
 	}
 
 	@Override
