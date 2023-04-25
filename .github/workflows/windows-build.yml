@@ -3,7 +3,7 @@ name: Windows Tests
 on: [workflow_dispatch]
       
 jobs:
-  push-and-build:
+  test:
     runs-on: windows-latest
     steps:
       - name: Checkout
@@ -21,6 +21,6 @@ jobs:
            $SNAPSHOT_VERSION = & ./mvnw.cmd help:evaluate -Dexpression=project.version | Select-String -Pattern "^[^\[]*" | Select-String -Pattern Download -NotMatch | ForEach-Object { $_.Matches.Value }
            set RELEASE_VERSION=%SNAPSHOT_VERSION:-SNAPSHOT=%
            ./mvnw.cmd versions:set -DnewVersion=%RELEASE_VERSION%
-           ./mvnw.cmd clean test
+           ./mvnw.cmd clean test -Dspring.main.banner-mode=CONSOLE
       
     
