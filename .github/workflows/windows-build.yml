@@ -19,10 +19,10 @@ jobs:
       - name: Testing
         run: |
            set "SNAPSHOT_VERSION = & ./mvnw.cmd help:evaluate -Dexpression=project.version | Select-String -Pattern "^[^\[]*" | Select-String -Pattern Download -NotMatch | ForEach-Object { $_.Matches.Value }"
-           ECHO %SNAPSHOT_VERSION%
+           echo "%SNAPSHOT_VERSION%"
            set "RELEASE_VERSION=%SNAPSHOT_VERSION:-SNAPSHOT=%"
+           echo "%RELEASE_VERSION%"
            ./mvnw.cmd versions:set -DnewVersion=%RELEASE_VERSION%
-           ECHO %RELEASE_VERSION%
            ./mvnw.cmd clean test 
       
     
