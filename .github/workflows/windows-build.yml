@@ -19,7 +19,8 @@ jobs:
       - name: Testing
         run: |
            set "SNAPSHOT_VERSION = & ./mvnw.cmd help:evaluate -Dexpression=project.version | Select-String -Pattern "^[^\[]*" | Select-String -Pattern Download -NotMatch | ForEach-Object { $_.Matches.Value }"
-           echo "& ./mvnw.cmd help:evaluate -Dexpression=project.version | Select-String -Pattern "^[^\[]*" | Select-String -Pattern Download -NotMatch | ForEach-Object { $_.Matches.Value }"
+           echo "./mvnw.cmd help:evaluate -Dexpression=project.version | Select-String -Pattern "^[^\[]*" | Select-String -Pattern Download -NotMatch | ForEach-Object { $_.Matches.Value }"
+           ./mvnw.cmd help:evaluate -Dexpression=project.version | Select-String -Pattern "^[^\[]*" | Select-String -Pattern Download -NotMatch | ForEach-Object { $_.Matches.Value }
            echo "%SNAPSHOT_VERSION%"
            set "RELEASE_VERSION=%SNAPSHOT_VERSION:-SNAPSHOT=%"
            echo "%RELEASE_VERSION%"
