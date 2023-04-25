@@ -18,9 +18,9 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Testing
         run: |
-           $SNAPSHOT_VERSION = & ./mvnw.cmd help:evaluate -Dexpression=project.version | Select-String -Pattern "^[^\[]*" | Select-String -Pattern Download -NotMatch | ForEach-Object { $_.Matches.Value }
+           set "SNAPSHOT_VERSION = & ./mvnw.cmd help:evaluate -Dexpression=project.version | Select-String -Pattern "^[^\[]*" | Select-String -Pattern Download -NotMatch | ForEach-Object { $_.Matches.Value }"
            ECHO %SNAPSHOT_VERSION%
-           set RELEASE_VERSION=%SNAPSHOT_VERSION:-SNAPSHOT=%
+           set "RELEASE_VERSION=%SNAPSHOT_VERSION:-SNAPSHOT=%"
            ./mvnw.cmd versions:set -DnewVersion=%RELEASE_VERSION%
            ECHO %RELEASE_VERSION%
            ./mvnw.cmd clean test 
