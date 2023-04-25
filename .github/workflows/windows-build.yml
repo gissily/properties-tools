@@ -1,16 +1,10 @@
 name: Push Package Sources and Build
-on:
-  push:
-    branches:
-      - main
-    tags-ignore:
-      - '*'
-    paths-ignore:
-      - .github/workflows/windows-build.yml 
+
+on: [workflow_dispatch]
       
 jobs:
   push-and-build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -24,6 +18,9 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Testing
         run: |
-           ./mvnw clean -PnativeTest test
+           $SNAPSHOT_VERSION = & ./mvnw.cmd help:evaluate -Dexpression=project.version | Select-String -Pattern "^[^\[]*" | Select-String -Pattern Download -NotMatch | ForEach-Object { $_.Matches.Value }
+           set RELEASE_VERSION=%SNAPSHOT_VERSION:-SNAPSHOT=%
+           ./mvnw.cmd versions:set -DnewVersion=%RELEASE_VERSION%
+           ./mvnw.cmd clean test
       
     
