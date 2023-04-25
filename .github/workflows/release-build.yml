@@ -28,6 +28,25 @@ jobs:
           components: 'native-image'
           cache: 'maven'
           github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Prepare 
+        if: ${{ matrix.os == 'windows-latest' }}
+        shell: pwsh
+        run: |
+           $snapshotVersion = & .\mvnw help:evaluate "-Dexpression=project.version" | Select-String -Pattern "^[^\[]*" | Select-String -Pattern Download -NotMatch | ForEach-Object { $_.Matches.Value }
+           $version = ""
+           foreach ($line in $snapshotVersion.split("`n")) {
+              $version = $version + $line
+           }
+           $releaseVersion = $version.Trim().TrimEnd("-SNAPSHOT")
+           .\mvnw.cmd versions:set "-DnewVersion=$releaseVersion"
+           
+      - name: Prepare
+        if: ${{ matrix.os != 'windows-latest' }}
+        run: | 
+          SNAPSHOT_VERSION=$(./mvnw help:evaluate -Dexpression=project.version | grep "^[^\\[]" |grep -v Download)
+          RELEASE_VERSION=${SNAPSHOT_VERSION/-SNAPSHOT/}
+          
+          ./mvnw versions:set -DnewVersion=${RELEASE_VERSION}
       - name: Package
         env:
           BIN_SUFFIX: ${{ matrix.suffix }}
