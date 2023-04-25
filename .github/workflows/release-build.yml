@@ -28,7 +28,7 @@ jobs:
           components: 'native-image'
           cache: 'maven'
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Prepare 
+      - name: Prepare win
         if: ${{ matrix.os == 'windows-latest' }}
         shell: pwsh
         run: |
