@@ -21,7 +21,7 @@ jobs:
         run: |
            $snapshotVersion = & .\mvnw help:evaluate "-Dexpression=project.version" | Select-String -Pattern "^[^\[]*" | Select-String -Pattern Download -NotMatch | ForEach-Object { $_.Matches.Value }
            $version = ""
-           foreach ($line in $releaseVersion.split("`n")) {
+           foreach ($line in $snapshotVersion.split("`n")) {
               $version = $version + $line
            }
            $releaseVersion = $version.Trim().TrimEnd("-SNAPSHOT")
