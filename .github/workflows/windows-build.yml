@@ -20,7 +20,8 @@ jobs:
         run: |
            $SNAPSHOT_VERSION = & ./mvnw.cmd help:evaluate -Dexpression=project.version | Select-String -Pattern "^[^\[]*" | Select-String -Pattern Download -NotMatch | ForEach-Object { $_.Matches.Value }
            set RELEASE_VERSION=%SNAPSHOT_VERSION:-SNAPSHOT=%
-           ./mvnw.cmd versions:set -DnewVersion=%RELEASE_VERSION%
-           ./mvnw.cmd clean test --spring.main.banner-mode=CONSOLE
+           ./mvnw.cmd versions:set -DnewVersion=%RELEASE_VERSION
+           echo %RELEASE_VERSION%
+           ./mvnw.cmd clean test 
       
     
