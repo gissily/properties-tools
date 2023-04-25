@@ -17,14 +17,15 @@ jobs:
           cache: 'maven'
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Testing
+        shell: pwsh
         run: |
-           set "SNAPSHOT_VERSION = & ./mvnw.cmd help:evaluate -Dexpression=project.version | Select-String -Pattern "^[^\[]*" | Select-String -Pattern Download -NotMatch | ForEach-Object { $_.Matches.Value }"
-           echo "./mvnw.cmd help:evaluate -Dexpression=project.version | Select-String -Pattern "^[^\[]*" | Select-String -Pattern Download -NotMatch | ForEach-Object { $_.Matches.Value }"
-           ./mvnw.cmd help:evaluate -Dexpression=project.version | Select-String -Pattern "^[^\[]*" | Select-String -Pattern Download -NotMatch | ForEach-Object { $_.Matches.Value }
-           echo "%SNAPSHOT_VERSION%"
-           set "RELEASE_VERSION=%SNAPSHOT_VERSION:-SNAPSHOT=%"
-           echo "%RELEASE_VERSION%"
-           ./mvnw.cmd versions:set -DnewVersion=%RELEASE_VERSION%
-           ./mvnw.cmd clean test 
-      
-    
+           $snapshotVersion = & .\mvnw help:evaluate "-Dexpression=project.version" | Select-String -Pattern "^[^\[]*" | Select-String -Pattern Download -NotMatch | ForEach-Object { $_.Matches.Value }
+           $version = ""
+           foreach ($line in $releaseVersion.split("`n")) {
+              $version = $version + $line
+           }
+           $releaseVersion = $version.Trim().TrimEnd("-SNAPSHOT")
+           
+           .\mvnw.cmd versions:set "-DnewVersion=$releaseVersion"
+           .\mvnw.cmd clean test 
+           
