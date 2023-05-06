@@ -29,7 +29,8 @@ jobs:
            echo "version is $version"
            $releaseVersion = $version.Trim().TrimEnd("-SNAPSHOT")
            echo "releaseVersion is $releaseVersion"
-           
-#           .\mvnw.cmd versions:set "-DnewVersion=$releaseVersion"
+           <#
+           .\mvnw.cmd versions:set "-DnewVersion=$releaseVersion"
+           #>
            .\mvnw.cmd clean test 
            
