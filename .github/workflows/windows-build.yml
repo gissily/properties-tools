@@ -21,14 +21,14 @@ jobs:
         run: |
            Get-ComputerInfo | select WindowsProductName, WindowsVersion, OsHardwareAbstractionLayer
            $snapshotVersion = & .\mvnw help:evaluate "-Dexpression=project.version" | Select-String -Pattern "^[^\[]*" | Select-String -Pattern Download -NotMatch | ForEach-Object { $_.Matches.Value }
-           echo $snapshotVersion
+           echo "snapshotVersion is $snapshotVersion"
            $version = ""
            foreach ($line in $snapshotVersion.split("`n")) {
               $version = $version + $line
            }
-           echo $version
+           echo "version is $version"
            $releaseVersion = $version.Trim().TrimEnd("-SNAPSHOT")
-           echo $releaseVersion
+           echo "releaseVersion is $releaseVersion"
            
            .\mvnw.cmd versions:set "-DnewVersion=$releaseVersion"
            .\mvnw.cmd clean test 
