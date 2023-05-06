@@ -20,7 +20,7 @@ jobs:
         shell: pwsh
         run: |
            Get-ComputerInfo | select WindowsProductName, WindowsVersion, OsHardwareAbstractionLayer
-           $snapshotVersion = & .\mvnw help:evaluate "-Dexpression=project.version" | Select-String -Pattern "^[^\[]*" | Select-String -Pattern Download -NotMatch | ForEach-Object { $_.Matches.Value }
+           $snapshotVersion = & .\mvnw help:evaluate "-Dexpression=project.version" | Select-String -Pattern "^[^\[]*" | Select-String -Pattern Download -NotMatch | Select-String -Pattern Progress -NotMatch | ForEach-Object { $_.Matches.Value }
            echo "snapshotVersion is $snapshotVersion"
            $version = ""
            foreach ($line in $snapshotVersion.split("`n")) {
@@ -29,8 +29,6 @@ jobs:
            echo "version is $version"
            $releaseVersion = $version.Trim().TrimEnd("-SNAPSHOT")
            echo "releaseVersion is $releaseVersion"
-           <#
            .\mvnw.cmd versions:set "-DnewVersion=$releaseVersion"
-           #>
            .\mvnw.cmd clean test 
            
