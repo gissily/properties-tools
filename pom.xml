@@ -17,7 +17,7 @@
   <properties>
     <java.version>17</java.version>
 
-    <picocli.version>4.7.3</picocli.version>
+    <picocli.version>4.7.4</picocli.version>
     <system-lambda.version>1.2.1</system-lambda.version>
   </properties>
 
