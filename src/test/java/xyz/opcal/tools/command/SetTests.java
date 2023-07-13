@@ -12,6 +12,12 @@ import org.springframework.util.ResourceUtils;
 @SpringBootTest(args = { "set", "./target/test-classes/test.properties", "new-key", "12345" })
 class SetTests {
 
+	
+	static {
+		System.out.println("----------");
+		System.out.println("set value");
+	}
+	
 	@Test
 	void set() throws Exception {
 		var file = ResourceUtils.getFile("./target/test-classes/test.properties");

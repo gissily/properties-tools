@@ -11,6 +11,11 @@ import org.springframework.util.ResourceUtils;
 @SpringBootTest(args = { "value", "./target/test-classes/test.properties", "aa" })
 class ValueTests {
 
+	static {
+		System.out.println("----------");
+		System.out.println("get value");
+	}
+	
 	@Test
 	void value() throws FileNotFoundException {
 		var file = ResourceUtils.getFile("./target/test-classes/test.properties");

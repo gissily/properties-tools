@@ -4,11 +4,14 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ImportRuntimeHints;
 
 import picocli.CommandLine;
 import picocli.CommandLine.IFactory;
 import xyz.opcal.tools.command.PropertiesCommand;
+import xyz.opcal.tools.hints.AppRuntimeHints;
 
+@ImportRuntimeHints({ AppRuntimeHints.class })
 @SpringBootApplication
 public class Commander implements CommandLineRunner, ExitCodeGenerator {
 

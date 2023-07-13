@@ -19,6 +19,8 @@
 
     <picocli.version>4.7.4</picocli.version>
     <system-lambda.version>1.2.1</system-lambda.version>
+    <configuration2.version>2.9.0</configuration2.version>
+    <commons-beanutils.version>1.9.4</commons-beanutils.version>
   </properties>
 
 
@@ -42,10 +44,22 @@
       <groupId>info.picocli</groupId>
       <artifactId>picocli-spring-boot-starter</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-autoconfigure</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-configuration2</artifactId>
+      <version>${configuration2.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>commons-beanutils</groupId>
+      <artifactId>commons-beanutils</artifactId>
+      <version>${commons-beanutils.version}</version>
     </dependency>
 
     <dependency>

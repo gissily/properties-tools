@@ -11,6 +11,11 @@ import org.springframework.util.ResourceUtils;
 @SpringBootTest(args = { "list", "./target/test-classes/test.properties" })
 class ListTests {
 
+	static {
+		System.out.println("----------");
+		System.out.println("list file");
+	}
+	
 	@Test
 	void list() throws FileNotFoundException {
 		var file = ResourceUtils.getFile("./target/test-classes/test.properties");

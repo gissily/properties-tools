@@ -11,6 +11,11 @@ import org.springframework.util.ResourceUtils;
 @SpringBootTest(args = { "--version" })
 class VersionTests {
 
+	static {
+		System.out.println("----------");
+		System.out.println("version check");
+	}
+	
 	@Test
 	void keys() throws FileNotFoundException {
 		var file = ResourceUtils.getFile("./target/test-classes/test.properties");

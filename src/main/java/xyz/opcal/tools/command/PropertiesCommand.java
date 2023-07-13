@@ -1,10 +1,17 @@
 package xyz.opcal.tools.command;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.util.Properties;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
+import org.apache.commons.configuration2.PropertiesConfiguration;
+import org.apache.commons.configuration2.builder.BuilderParameters;
+import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
+import org.apache.commons.configuration2.builder.PropertiesBuilderParametersImpl;
+import org.apache.commons.configuration2.builder.fluent.FileBasedBuilderParameters;
+import org.apache.commons.configuration2.builder.fluent.PropertiesBuilderParameters;
+import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.stereotype.Component;
 
 import picocli.CommandLine.Command;
@@ -21,18 +28,33 @@ public class PropertiesCommand implements Runnable {
 	@Spec
 	CommandSpec spec;
 
+	static final Class<?>[] interfaces = new Class<?>[] { PropertiesBuilderParameters.class, FileBasedBuilderParameters.class };
+
+	/**
+	 * native support
+	 * @return
+	 */
+	static PropertiesBuilderParameters builderProperties() {
+		ClassLoader classLoader = ProxyFactory.class.getClassLoader();
+		InvocationHandler handler = new ParametersIfcInvocationHandler(new PropertiesBuilderParametersImpl());
+		var newProxyInstance = (PropertiesBuilderParameters) Proxy.newProxyInstance(classLoader, interfaces, handler);
+		new org.apache.commons.configuration2.builder.fluent.Parameters().getDefaultParametersManager().initializeParameters(newProxyInstance);
+		return newProxyInstance;
+	}
+
 	@Command(name = "list", description = "list all properties")
 	public void list(@Parameters(index = "0", description = "properties file path") File file) {
 		if (file == null || !file.exists()) {
 			throw new ParameterException(spec.commandLine(), "file does not exist");
 		}
-		Properties properties = new Properties();
-		try (var fileInputStream = new FileInputStream(file)) {
-			properties.load(fileInputStream);
+		
+		var builder = new FileBasedConfigurationBuilder<>(PropertiesConfiguration.class).configure(builderProperties().setFile(file));
+		try {
+			var configuration = builder.getConfiguration();
+			configuration.getKeys().forEachRemaining(key -> System.out.println(key + "=" + configuration.getProperty(key)));
 		} catch (Exception e) {
 			throw new ParameterException(spec.commandLine(), "Properties load exception", e);
 		}
-		properties.forEach((key, value) -> System.out.println(key + "=" + value));
 	}
 
 	@Command(name = "keys", description = "list all keys")
@@ -40,16 +62,18 @@ public class PropertiesCommand implements Runnable {
 		if (file == null || !file.exists()) {
 			throw new ParameterException(spec.commandLine(), "file does not exist");
 		}
-		Properties properties = new Properties();
-		try (var fileInputStream = new FileInputStream(file)) {
-			properties.load(fileInputStream);
+		
+		var builder = new FileBasedConfigurationBuilder<>(PropertiesConfiguration.class).configure(builderProperties().setFile(file));
+		try {
+			var configuration = builder.getConfiguration();
+			var keyString = new StringBuilder();
+			var lineSeparator = line ? "\n" : " ";
+			configuration.getKeys().forEachRemaining(key -> keyString.append(key).append(lineSeparator));
+			System.out.println(keyString.toString());
 		} catch (Exception e) {
 			throw new ParameterException(spec.commandLine(), "Properties load exception", e);
 		}
-		var keyString = new StringBuilder();
-		var lineSeparator = line ? "\n" : " ";
-		properties.keySet().forEach(key -> keyString.append(key).append(lineSeparator));
-		System.out.println(keyString.toString());
+
 	}
 
 	@Command(name = "value", description = "get property value by key")
@@ -59,14 +83,13 @@ public class PropertiesCommand implements Runnable {
 			throw new ParameterException(spec.commandLine(), "file does not exist");
 		}
 
-		Properties properties = new Properties();
-		try (var fileInputStream = new FileInputStream(file)) {
-			properties.load(fileInputStream);
+		var builder = new FileBasedConfigurationBuilder<>(PropertiesConfiguration.class).configure(builderProperties().setFile(file));
+		try {
+			var configuration = builder.getConfiguration();
+			System.out.println(configuration.getProperty(key));
 		} catch (Exception e) {
 			throw new ParameterException(spec.commandLine(), "Properties load exception", e);
 		}
-
-		System.out.println(properties.getProperty(key));
 	}
 
 	@Command(name = "set", description = "set property value by key")
@@ -76,20 +99,17 @@ public class PropertiesCommand implements Runnable {
 			throw new ParameterException(spec.commandLine(), "file does not exist");
 		}
 
-		Properties properties = new Properties();
-		try (var fileInputStream = new FileInputStream(file)) {
-			properties.load(fileInputStream);
-		} catch (Exception e) {
-			throw new ParameterException(spec.commandLine(), "Properties load exception", e);
-		}
-		properties.setProperty(key, value);
-
-		try (var outStream = new FileOutputStream(file)) {
-			properties.store(outStream, null);
+		var builder = new FileBasedConfigurationBuilder<>(PropertiesConfiguration.class).configure(builderProperties().setFile(file));
+		try {
+			var configuration = builder.getConfiguration();
+			configuration.getLayout().setGlobalSeparator("=");
+			configuration.getLayout().setFooterComment(null);
+			configuration.setProperty(key, value);
+			builder.save();
+			System.out.println(key + "=" + configuration.getProperty(key));
 		} catch (Exception e) {
 			throw new ParameterException(spec.commandLine(), "Properties save exception", e);
 		}
-		System.out.println(key + "=" + properties.getProperty(key));
 	}
 
 	@Override
@@ -97,4 +117,25 @@ public class PropertiesCommand implements Runnable {
 		throw new ParameterException(spec.commandLine(), "Specify a subcommand");
 	}
 
+	/**
+	 * native support
+	 */
+	private static class ParametersIfcInvocationHandler implements InvocationHandler {
+		private final Object target;
+
+		public ParametersIfcInvocationHandler(final Object targetObj) {
+			target = targetObj;
+		}
+
+		@Override
+		public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+			final Object result = method.invoke(target, args);
+			return isFluentResult(method) ? proxy : result;
+		}
+
+		private static boolean isFluentResult(final Method method) {
+			final Class<?> declaringClass = method.getDeclaringClass();
+			return declaringClass.isInterface() && !declaringClass.equals(BuilderParameters.class);
+		}
+	}
 }
