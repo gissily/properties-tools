@@ -23,7 +23,7 @@ import picocli.CommandLine.Spec;
 
 @Component
 @Command(mixinStandardHelpOptions = true, description = "properties file update command", versionProvider = PropsVersionProvider.class)
-public class PropertiesCommand implements Runnable {
+public class PropertiesCommand {
 
 	@Spec
 	CommandSpec spec;
@@ -32,6 +32,7 @@ public class PropertiesCommand implements Runnable {
 
 	/**
 	 * native support
+	 * 
 	 * @return
 	 */
 	static PropertiesBuilderParameters builderProperties() {
@@ -47,7 +48,7 @@ public class PropertiesCommand implements Runnable {
 		if (file == null || !file.exists()) {
 			throw new ParameterException(spec.commandLine(), "file does not exist");
 		}
-		
+
 		var builder = new FileBasedConfigurationBuilder<>(PropertiesConfiguration.class).configure(builderProperties().setFile(file));
 		try {
 			var configuration = builder.getConfiguration();
@@ -62,7 +63,7 @@ public class PropertiesCommand implements Runnable {
 		if (file == null || !file.exists()) {
 			throw new ParameterException(spec.commandLine(), "file does not exist");
 		}
-		
+
 		var builder = new FileBasedConfigurationBuilder<>(PropertiesConfiguration.class).configure(builderProperties().setFile(file));
 		try {
 			var configuration = builder.getConfiguration();
@@ -110,11 +111,6 @@ public class PropertiesCommand implements Runnable {
 		} catch (Exception e) {
 			throw new ParameterException(spec.commandLine(), "Properties save exception", e);
 		}
-	}
-
-	@Override
-	public void run() {
-		throw new ParameterException(spec.commandLine(), "Specify a subcommand");
 	}
 
 	/**
