@@ -10,18 +10,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.ResourceUtils;
 
-@SpringBootTest(args = { "list", "./target/test-classes/test.properties" })
-class ListTests {
+@SpringBootTest(args = { "keys", "./target/test-classes/test.properties", "--line" })
+class KeysLineTests {
 
 	private static Logger commandConsole = LoggerFactory.getLogger("COMMAND_CONSOLE");
 
 	static {
 		commandConsole.info("----------");
-		commandConsole.info("list file");
+		commandConsole.info("list keys line");
 	}
 
 	@Test
-	void list() throws FileNotFoundException {
+	void keys() throws FileNotFoundException {
 		var file = ResourceUtils.getFile("./target/test-classes/test.properties");
 		assertTrue(file.exists());
 	}

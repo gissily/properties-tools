@@ -51,6 +51,11 @@
     </dependency>
 
     <dependency>
+      <groupId>xyz.opcal.cloud</groupId>
+      <artifactId>opcal-cloud-commons-logback</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-configuration2</artifactId>
       <version>${configuration2.version}</version>
