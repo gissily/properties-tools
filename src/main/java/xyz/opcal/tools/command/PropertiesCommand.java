@@ -38,6 +38,10 @@ public class PropertiesCommand {
 
 	static final Class<?>[] interfaces = new Class<?>[] { PropertiesBuilderParameters.class, FileBasedBuilderParameters.class };
 
+	static {
+		builderProperties();
+	}
+	
 	/**
 	 * native support
 	 * 

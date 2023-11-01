@@ -24,8 +24,7 @@ public class AppRuntimeHints implements RuntimeHintsRegistrar {
 			;
 		
 		hints.proxies()
-			.registerJdkProxy(PropertiesBuilderParameters.class)
-			.registerJdkProxy(FileBasedBuilderParameters.class);
+			.registerJdkProxy(PropertiesBuilderParameters.class, FileBasedBuilderParameters.class);
 	}
 
 }
