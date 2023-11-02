@@ -157,6 +157,7 @@
           <imageName>props-${BIN_SUFFIX}</imageName>
           <buildArgs combine.children="append">
             <buildArg>-march=compatibility</buildArg>
+            <buildArg>--gc=G1</buildArg>
           </buildArgs>
         </configuration>
       </plugin>
