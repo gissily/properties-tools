@@ -21,7 +21,7 @@
 		<system-lambda.version>1.2.1</system-lambda.version>
 		<configuration2.version>2.9.0</configuration2.version>
 		<commons-beanutils.version>1.9.4</commons-beanutils.version>
-		<gc.args></gc.args>
+		<gc.args>--gc=serial </gc.args>
 	</properties>
 
 	<profiles>
