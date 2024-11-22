@@ -65,9 +65,8 @@ jobs:
           rm -f ./target/props.jar.original
           rm -f ./target/props***build_artifacts.txt
       - name: Release and Upload
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: './target/props**'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
