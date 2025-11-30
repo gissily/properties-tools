@@ -19,8 +19,7 @@ public class AppRuntimeHints implements RuntimeHintsRegistrar {
 			.registerType(java.net.URL[].class)
 			.registerType(
 					org.apache.commons.configuration2.PropertiesConfiguration.class, 
-					MemberCategory.INVOKE_PUBLIC_CONSTRUCTORS, 
-					MemberCategory.INTROSPECT_PUBLIC_CONSTRUCTORS)
+					MemberCategory.INVOKE_PUBLIC_CONSTRUCTORS)
 			;
 		
 		hints.proxies()

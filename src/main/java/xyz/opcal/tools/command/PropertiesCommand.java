@@ -81,7 +81,7 @@ public class PropertiesCommand {
 			var configuration = builder.getConfiguration();
 			var lineSeparator = line ? "\n" : " ";
 			var keys = StreamSupport.stream(Spliterators.spliteratorUnknownSize(configuration.getKeys(), Spliterator.ORDERED), false)
-					.reduce(new StringBuilder(), (keyString, key) -> keyString.append(key).append(lineSeparator), (t, u) -> u).toString();
+					.reduce(new StringBuilder(), (keyString, key) -> keyString.append(key).append(lineSeparator), (_, u) -> u).toString();
 			commandConsole.info(keys);
 		} catch (Exception e) {
 			throw new ParameterException(spec.commandLine(), PropertiesCommandConstants.ErrorConstants.PROPERTIES_LOAD_EXCEPTION, e);

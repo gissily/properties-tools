@@ -15,7 +15,7 @@
 	<version>1.1.4-SNAPSHOT</version>
 
 	<properties>
-		<java.version>21</java.version>
+		<java.version>25</java.version>
 
 		<picocli.version>4.7.7</picocli.version>
 		<configuration2.version>2.13.0</configuration2.version>
