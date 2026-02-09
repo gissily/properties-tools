@@ -24,16 +24,18 @@ jobs:
           distribution: 'graalvm'
           cache: 'maven'
           github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Receive Keys
+        env:
+          GPG_PUBID: ${{ secrets.GPG_PUBID }}
+        run: |
+          gpg --keyserver keyserver.ubuntu.com --recv-keys $GPG_PUBID
       - name: Testing
         run: |
           ./mvnw clean -PnativeTest test -Pnative native:compile
       - name: Signature
-        env:
-          GPG_PUBID: ${{ secrets.GPG_PUBID }}
         working-directory: target
         run: |
           gpg --armor --detach-sign props-$BIN_SUFFIX
-          gpg --keyserver keyserver.ubuntu.com --recv-keys $GPG_PUBID
           gpg --armor --export 'opcal <opcal.xyz@outlook.com>' > Release.asc
       - name: Verify
         run: |
