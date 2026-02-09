@@ -29,10 +29,16 @@ jobs:
            ./mvnw clean -PnativeTest test -Pnative native:compile
            
       - name: Signature
+        env:
+          GPG_PUBID: ${{ secrets.GPG_PUBID }}
         working-directory: target 
         run: |
            gpg --armor --detach-sign props-$BIN_SUFFIX
-      - name: list
+           gpg --keyserver keyserver.ubuntu.com --recv-keys $GPG_PUBID
+           gpg --armor --export 'opcal <opcal.xyz@outlook.com>' > Release.asc
+      - name: Verify
         run: |
+           gpg --import Release.asc
+           gpg --verify ./target/props-$BIN_SUFFIX.asc ./target/props-$BIN_SUFFIX
            ls -lah ./target/
            
