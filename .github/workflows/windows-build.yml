@@ -1,13 +1,22 @@
 name: Windows Tests
 
-on: [workflow_dispatch]
-      
+on: [ workflow_dispatch ]
+
+env:
+  BIN_SUFFIX: win
+
 jobs:
   test:
     runs-on: windows-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRI }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          trust_level: 5
       - name: Setup graalvm
         uses: graalvm/setup-graalvm@v1
         with:
@@ -18,19 +27,33 @@ jobs:
       - name: Testing
         shell: pwsh
         run: |
-           Get-ComputerInfo | select WindowsProductName, WindowsVersion, OsHardwareAbstractionLayer
-           $snapshotVersion = & .\mvnw help:evaluate "-Dexpression=project.version" | Select-String -Pattern "^[^\[]*" | Select-String -Pattern Download -NotMatch | Select-String -Pattern Progress -NotMatch | ForEach-Object { $_.Matches.Value }
-           echo "snapshotVersion is $snapshotVersion"
-           $version = ""
-           foreach ($line in $snapshotVersion.split("`n")) {
-              $version = $version + $line
-           }
-           echo "version is $version"
-           $releaseVersion = $version.Trim().TrimEnd("-SNAPSHOT")
-           echo "releaseVersion is $releaseVersion"
-           echo "     "
-           echo "     "
-           echo "     "
-           .\mvnw.cmd versions:set "-DnewVersion=$releaseVersion"
-           .\mvnw.cmd clean -PnativeTest test 
-           
+          Get-ComputerInfo | select WindowsProductName, WindowsVersion, OsHardwareAbstractionLayer
+          $snapshotVersion = & .\mvnw help:evaluate "-Dexpression=project.version" | Select-String -Pattern "^[^\[]*" | Select-String -Pattern Download -NotMatch | Select-String -Pattern Progress -NotMatch | ForEach-Object { $_.Matches.Value }
+          echo "snapshotVersion is $snapshotVersion"
+          $version = ""
+          foreach ($line in $snapshotVersion.split("`n")) {
+             $version = $version + $line
+          }
+          echo "version is $version"
+          $releaseVersion = $version.Trim().TrimEnd("-SNAPSHOT")
+          echo "releaseVersion is $releaseVersion"
+          echo "     "
+          echo "     "
+          echo "     "
+          .\mvnw.cmd versions:set "-DnewVersion=$releaseVersion"
+          .\mvnw.cmd clean -PnativeTest test -Pnative native:compile
+      - name: Signature
+        env:
+          GPG_PUBID: ${{ secrets.GPG_PUBID }}
+        working-directory: target
+        shell: pwsh
+        run: |
+          gpg --armor --detach-sign props-$BIN_SUFFIX
+          gpg --keyserver keyserver.ubuntu.com --recv-keys $GPG_PUBID
+          gpg --armor --export 'opcal <opcal.xyz@outlook.com>' > Release.asc
+      - name: Verify
+        shell: pwsh
+        run: |
+          gpg --import .\target\Release.asc
+          gpg --verify .\target\props-$BIN_SUFFIX.asc .\target\props-$BIN_SUFFIX
+          dir .\target
