@@ -26,8 +26,13 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Testing
         run: |
-           ./mvnw clean -PnativeTest test
-           ./mvnw clean -Pnative native:compile
+           ./mvnw clean -PnativeTest test -Pnative native:compile
+           
+      - name: Signature
+        working-directory: target 
+        run: |
            gpg --armor --detach-sign props-$BIN_SUFFIX
+      - name: list
+        run: |
            ls -lah ./target/
            
