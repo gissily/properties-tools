@@ -20,6 +20,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRI }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          trust_level: 5
       - name: Setup graalvm
         uses: graalvm/setup-graalvm@v1
         with:
@@ -64,9 +70,30 @@ jobs:
           rm -f ./target/props.jar 
           rm -f ./target/props.jar.original
           rm -f ./target/props***build_artifacts.txt
+      - name: Signature Win
+        if: ${{ matrix.os == 'windows-latest' }}
+        working-directory: target
+        shell: pwsh
+        run: |
+          gpg --armor --detach-sign props-$env:BIN_SUFFIX
+      - name: Signature
+        if: ${{ matrix.os != 'windows-latest' }}
+        working-directory: target
+        run: |
+          gpg --armor --detach-sign props-$BIN_SUFFIX
+      - name: Release Key
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        working-directory: target
+        env:
+          GPG_PUBID: ${{ secrets.GPG_PUBID }}
+        run: |
+          gpg --keyserver keyserver.ubuntu.com --recv-keys $GPG_PUBID
+          gpg --armor --export 'opcal <opcal.xyz@outlook.com>' > Release.asc
       - name: Release and Upload
         uses: softprops/action-gh-release@v2
         with:
-          files: './target/props**'
+          files: |
+            ./target/props**
+            ./target/Release.asc
           token: ${{ secrets.GITHUB_TOKEN }}
 

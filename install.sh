@@ -18,14 +18,26 @@ if [[ "${RELEASE}" == "" ]]; then
   exit 1
 fi
 
+RELEASE_KEY="https://github.com/gissily/properties-tools/releases/download/${RELEASE}/Release.asc"
 DOWNLOAD_URL="https://github.com/gissily/properties-tools/releases/download/${RELEASE}/props-${BIN_SUFFIX}"
- 
+DOWNLOAD_URL_ASC="https://github.com/gissily/properties-tools/releases/download/${RELEASE}/props-${BIN_SUFFIX}.asc"
+
+echo "downloading ${RELEASE_KEY}"
+curl -L "${RELEASE_KEY}" -o /tmp/Release.asc
+
 echo "downloading ${DOWNLOAD_URL}"
+curl -L "${DOWNLOAD_URL}" -o /tmp/props-${BIN_SUFFIX}
 
-curl -L ${DOWNLOAD_URL} -o /tmp/props 
+echo "downloading ${DOWNLOAD_URL_ASC}"
+curl -L "${DOWNLOAD_URL_ASC}" -o /tmp/props-${BIN_SUFFIX}.asc
 
-chmod +x /tmp/props
+gpg --import /tmp/Release.asc
+gpg --verify /tmp/props-${BIN_SUFFIX}.asc /tmp/props-${BIN_SUFFIX}
 
-cp /tmp/props /usr/local/bin/props
+chmod +x /tmp/props-${BIN_SUFFIX}
 
-rm -f /tmp/props
+cp /tmp/props-${BIN_SUFFIX} /usr/local/bin/props
+
+rm -f /tmp/Release.asc
+rm -f /tmp/props-${BIN_SUFFIX}
+rm -f /tmp/props-${BIN_SUFFIX}.asc
