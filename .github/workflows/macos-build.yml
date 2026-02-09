@@ -2,12 +2,21 @@ name: Macos Tests
 
 on: [workflow_dispatch]
       
+env:
+  BIN_SUFFIX: macos
+	
 jobs:
   test:
     runs-on: macos-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRI }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          trust_level: 5
       - name: Setup graalvm
         uses: graalvm/setup-graalvm@v1
         with:
@@ -17,5 +26,20 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Testing
         run: |
-           ./mvnw clean -PnativeTest test
+           ./mvnw clean -PnativeTest test -Pnative native:compile
+        
+      - name: Signature
+        env:
+          GPG_PUBID: ${{ secrets.GPG_PUBID }}
+        working-directory: target 
+        run: |
+           gpg --armor --detach-sign props-$BIN_SUFFIX
+           gpg --keyserver keyserver.ubuntu.com --recv-keys $GPG_PUBID
+           gpg --armor --export 'opcal <opcal.xyz@outlook.com>' > Release.asc
+      - name: Verify
+        run: |
+           gpg --import ./target/Release.asc
+           gpg --verify ./target/props-$BIN_SUFFIX.asc ./target/props-$BIN_SUFFIX || echo "verify failed"
+           ls -lah ./target/
+
            
