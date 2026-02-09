@@ -1,8 +1,9 @@
 name: Signature
 
 on: [workflow_dispatch]
+
 env:
-  BIN_SUFFIX: 'linux'
+  BIN_SUFFIX: linux
       
 jobs:
   test:
