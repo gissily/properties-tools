@@ -72,12 +72,16 @@ jobs:
           rm -f ./target/props***build_artifacts.txt
       - name: Signature Win
         if: ${{ matrix.os == 'windows-latest' }}
+        env:
+          BIN_SUFFIX: ${{ matrix.suffix }}
         working-directory: target
         shell: pwsh
         run: |
           gpg --armor --detach-sign props-$env:BIN_SUFFIX
       - name: Signature
         if: ${{ matrix.os != 'windows-latest' }}
+        env:
+          BIN_SUFFIX: ${{ matrix.suffix }}
         working-directory: target
         run: |
           gpg --armor --detach-sign props-$BIN_SUFFIX
