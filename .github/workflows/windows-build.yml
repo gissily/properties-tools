@@ -48,12 +48,12 @@ jobs:
         working-directory: target
         shell: pwsh
         run: |
-          gpg --armor --detach-sign props-$BIN_SUFFIX
-          gpg --keyserver keyserver.ubuntu.com --recv-keys $GPG_PUBID
+          gpg --armor --detach-sign props-$env:BIN_SUFFIX
+          gpg --keyserver keyserver.ubuntu.com --recv-keys $env:GPG_PUBID
           gpg --armor --export 'opcal <opcal.xyz@outlook.com>' > Release.asc
       - name: Verify
         shell: pwsh
         run: |
           gpg --import .\target\Release.asc
-          gpg --verify .\target\props-$BIN_SUFFIX.asc .\target\props-$BIN_SUFFIX
+          gpg --verify .\target\props-$env:BIN_SUFFIX.asc .\target\props-$env:BIN_SUFFIX
           dir .\target
