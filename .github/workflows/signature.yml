@@ -28,6 +28,6 @@ jobs:
         run: |
            ./mvnw clean -PnativeTest test
            ./mvnw clean -Pnative native:compile
-           gpg --armor --detach-sign props-${{ BIN_SUFFIX }}
+           gpg --armor --detach-sign props-$BIN_SUFFIX
            ls -lah ./target/
            
