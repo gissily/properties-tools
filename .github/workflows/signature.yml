@@ -38,7 +38,7 @@ jobs:
            gpg --armor --export 'opcal <opcal.xyz@outlook.com>' > Release.asc
       - name: Verify
         run: |
-           gpg --import Release.asc
+           gpg --import ./target/Release.asc
            gpg --verify ./target/props-$BIN_SUFFIX.asc ./target/props-$BIN_SUFFIX
            ls -lah ./target/
            
