@@ -1,0 +1,32 @@
+name: Signature
+
+on: [workflow_dispatch]
+env:
+  BIN_SUFFIX: 'linux'
+      
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRI }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          trust_level: 5
+      - name: Setup graalvm
+        uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '25'
+          distribution: 'graalvm'
+          cache: 'maven'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Testing
+        run: |
+           ./mvnw clean -PnativeTest test
+           ./mvnw clean -Pnative native:compile
+           gpg --armor --detach-sign props-${{ BIN_SUFFIX }}
+           ls -lah ./target/
+           
