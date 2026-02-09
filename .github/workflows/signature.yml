@@ -28,9 +28,6 @@ jobs:
         env:
           GPG_PUBID: ${{ secrets.GPG_PUBID }}
         run: |
-          mkdir -p ~/.gnupg/
-          touch ~/.gnupg/dirmngr.conf
-          echo "standard-resolver" >  ~/.gnupg/dirmngr.conf
           gpg --keyserver keyserver.ubuntu.com --recv-keys $GPG_PUBID
       - name: Testing
         run: |
