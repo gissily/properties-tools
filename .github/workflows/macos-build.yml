@@ -27,7 +27,6 @@ jobs:
       - name: Testing
         run: |
           ./mvnw clean -PnativeTest test -Pnative native:compile
-
       - name: Signature
         env:
           GPG_PUBID: ${{ secrets.GPG_PUBID }}
@@ -39,7 +38,7 @@ jobs:
       - name: Verify
         run: |
           gpg --import ./target/Release.asc
-          gpg --verify ./target/props-$BIN_SUFFIX.asc ./target/props-$BIN_SUFFIX || echo "verify failed"
+          gpg --verify ./target/props-$BIN_SUFFIX.asc ./target/props-$BIN_SUFFIX
           ls -lah ./target/
 
            
