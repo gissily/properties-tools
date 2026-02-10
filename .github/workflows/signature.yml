@@ -36,11 +36,11 @@ jobs:
       - name: Signature
         working-directory: target
         run: |
-          gpg --armor --detach-sign props-$BIN_SUFFIX
+          gpg --armor --detach-sign props-${BIN_SUFFIX}-${ARCH}
           gpg --armor --export 'opcal <opcal.xyz@outlook.com>' > Release.asc
       - name: Verify
         run: |
           gpg --import ./target/Release.asc
-          gpg --verify ./target/props-$BIN_SUFFIX.asc ./target/props-$BIN_SUFFIX
+          gpg --verify ./target/props-${BIN_SUFFIX}-${ARCH}.asc ./target/props-${BIN_SUFFIX}-${ARCH}
           ls -lah ./target/
            
