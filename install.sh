@@ -60,6 +60,8 @@ chmod +x /tmp/props-${BIN_SUFFIX}
 
 cp /tmp/props-${BIN_SUFFIX} /usr/local/bin/props
 
+echo "props [${RELEASE}] installed successfully!"
+
 rm -f /tmp/Release.asc
 rm -f /tmp/props-${BIN_SUFFIX}
 rm -f /tmp/props-${BIN_SUFFIX}.asc
