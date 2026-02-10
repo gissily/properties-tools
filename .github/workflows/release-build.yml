@@ -8,6 +8,7 @@ on:
 jobs:
   build-release:
     strategy:
+      max-parallel: 5
       matrix:
         include:
           - os: ubuntu-latest
