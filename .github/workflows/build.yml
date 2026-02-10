@@ -10,7 +10,11 @@ on:
       - .github/workflows/macos-build.yml
       - .github/workflows/signature.yml 
       - .github/workflows/arm-build.yml
-      
+
+env:
+  BIN_SUFFIX: linux
+  ARCH: x86_64
+
 jobs:
   push-and-build:
     runs-on: ubuntu-latest
@@ -26,8 +30,6 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Testing
         run: |
-           uname
-           uname -m
            ./mvnw clean -PnativeTest test
       
     

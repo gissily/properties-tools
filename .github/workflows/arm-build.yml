@@ -1,7 +1,11 @@
 name: Arm Build
 
 on: [ workflow_dispatch ]
-  
+
+env:
+  BIN_SUFFIX: linux
+  ARCH: arm64
+
 jobs:
   build:
     runs-on: ubuntu-24.04-arm
@@ -17,6 +21,4 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Testing
         run: |
-           uname
-           uname -m
-           ./mvnw clean -PnativeTest test
+          ./mvnw clean -PnativeTest test
