@@ -4,6 +4,7 @@ on: [ workflow_dispatch ]
 
 env:
   BIN_SUFFIX: macos
+  ARCH: arm64
 
 jobs:
   test:
@@ -28,24 +29,22 @@ jobs:
         env:
           GPG_PUBID: ${{ secrets.GPG_PUBID }}
         run: |
-          uname
-          uname -m
           mkdir -p ~/.gnupg/
           touch ~/.gnupg/dirmngr.conf
           echo "standard-resolver" >  ~/.gnupg/dirmngr.conf
-          gpg --keyserver keyserver.ubuntu.com --recv-keys $GPG_PUBID
+          gpg --keyserver keyserver.ubuntu.com --recv-keys ${GPG_PUBID}
       - name: Testing
         run: |
           ./mvnw clean -PnativeTest test -Pnative native:compile
       - name: Signature
         working-directory: target
         run: |
-          gpg --armor --detach-sign props-$BIN_SUFFIX
+          gpg --armor --detach-sign props-${BIN_SUFFIX}-${ARCH}
           gpg --armor --export 'opcal <opcal.xyz@outlook.com>' > Release.asc
       - name: Verify
         run: |
           gpg --import ./target/Release.asc
-          gpg --verify ./target/props-$BIN_SUFFIX.asc ./target/props-$BIN_SUFFIX
+          gpg --verify ./target/props-${BIN_SUFFIX}-${ARCH}.asc ./target/props-${BIN_SUFFIX}-${ARCH}
           ls -lah ./target/
 
            
