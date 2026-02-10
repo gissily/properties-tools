@@ -28,6 +28,8 @@ jobs:
         env:
           GPG_PUBID: ${{ secrets.GPG_PUBID }}
         run: |
+          uname
+          uname -m
           mkdir -p ~/.gnupg/
           touch ~/.gnupg/dirmngr.conf
           echo "standard-resolver" >  ~/.gnupg/dirmngr.conf
