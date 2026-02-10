@@ -9,6 +9,7 @@ on:
       - .github/workflows/windows-build.yml
       - .github/workflows/macos-build.yml
       - .github/workflows/signature.yml 
+      - .github/workflows/arm-build.yml
       
 jobs:
   push-and-build:
