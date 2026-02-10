@@ -53,8 +53,8 @@ curl -L "${DOWNLOAD_URL}" -o /tmp/props-${BIN_SUFFIX}
 echo "downloading ${DOWNLOAD_URL_ASC}"
 curl -L "${DOWNLOAD_URL_ASC}" -o /tmp/props-${BIN_SUFFIX}.asc
 
-gpg --import /tmp/Release.asc
-gpg --verify /tmp/props-${BIN_SUFFIX}.asc /tmp/props-${BIN_SUFFIX}
+gpg --quiet --batch --import /tmp/Release.asc
+gpg --quiet --verify /tmp/props-${BIN_SUFFIX}.asc /tmp/props-${BIN_SUFFIX}
 
 chmod +x /tmp/props-${BIN_SUFFIX}
 
