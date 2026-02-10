@@ -4,6 +4,7 @@ on: [ workflow_dispatch ]
 
 env:
   BIN_SUFFIX: win
+  ARCH: x86_64
 
 jobs:
   test:
@@ -29,7 +30,7 @@ jobs:
           GPG_PUBID: ${{ secrets.GPG_PUBID }}
         shell: pwsh
         run: |
-          gpg --keyserver keyserver.ubuntu.com --recv-keys $env:GPG_PUBID
+          gpg --keyserver keyserver.ubuntu.com --recv-keys ${env:GPG_PUBID}
       - name: Testing
         shell: pwsh
         run: |
@@ -52,11 +53,11 @@ jobs:
         working-directory: target
         shell: pwsh
         run: |
-          gpg --armor --detach-sign props-$env:BIN_SUFFIX
+          gpg --armor --detach-sign props-${env:BIN_SUFFIX}-${env:ARCH}
           gpg --armor --export 'opcal <opcal.xyz@outlook.com>' > Release.asc
       - name: Verify
         shell: pwsh
         run: |
           gpg --import .\target\Release.asc
-          gpg --verify .\target\props-$env:BIN_SUFFIX.asc .\target\props-$env:BIN_SUFFIX
+          gpg --verify .\target\props-${env:BIN_SUFFIX}-${env:ARCH}.asc .\target\props-${env:BIN_SUFFIX}-${env:ARCH}
           dir .\target
