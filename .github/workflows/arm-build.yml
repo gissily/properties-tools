@@ -3,7 +3,7 @@ name: Arm Build
 on: [ workflow_dispatch ]
   
 jobs:
-  push-and-build:
+  build:
     runs-on: ubuntu-24.04-arm
     steps:
       - name: Checkout
@@ -17,6 +17,6 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Testing
         run: |
+            uname
+            uname -m
            ./mvnw clean -PnativeTest test
-           uname
-           uname -m
